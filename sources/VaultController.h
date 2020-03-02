@@ -63,6 +63,7 @@ public:
 	unsigned pendingDataSize;
 	vector<unsigned> pendingReadData;	//Store Read packet TAG for return data
 	DualVectorObject<Packet, Packet> *upBufferDest;
+	DualVectorObject<Packet, Packet> *upBufferDestLL;
 	
 	//Command and data to be transmitted to DRAM I/O
 	DRAMCommand *cmdBus;

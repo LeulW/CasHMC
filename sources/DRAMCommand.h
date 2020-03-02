@@ -51,7 +51,7 @@ public:
 	//Functions
 	//
 	DRAMCommand(DRAMCommandType cmdtype, unsigned tag, unsigned bnk, unsigned col, unsigned rw, unsigned dSize,
-					bool pst, TranTrace *lat, bool last, PacketCommandType pktCMD, bool atm, bool seg);
+					bool pst, TranTrace *lat, bool last, PacketCommandType pktCMD, bool atm, bool seg, bool logicRequest=false);
 	DRAMCommand(const DRAMCommand &dc);
 	virtual ~DRAMCommand();
 
@@ -70,6 +70,7 @@ public:
 	PacketCommandType packetCMD;
 	bool atomic;
 	bool segment;
+	bool logicRequest;
 };
 
 ostream& operator<<(ostream &out, const DRAMCommand &dc);

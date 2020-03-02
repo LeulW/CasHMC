@@ -151,4 +151,4 @@ RunSim.o: sources/RunSim.cpp /usr/include/stdc-predef.h \
  sources/LinkMaster.h sources/SingleVectorObject.h sources/Link.h \
  sources/LinkSlave.h sources/HMC.h sources/CrossbarSwitch.h \
  sources/VaultController.h sources/DRAMCommand.h sources/CommandQueue.h \
- sources/DRAM.h sources/BankState.h
+ sources/DRAM.h sources/BankState.h sources/LogicLayer.h

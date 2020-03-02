@@ -32,6 +32,7 @@ HMC::HMC(ofstream &debugOut_, ofstream &stateOut_):
 	for(int v=0; v<NUM_VAULTS; v++) {
 		vaultControllers.push_back(new VaultController(debugOut, stateOut, v));
 		drams.push_back(new DRAM(debugOut, stateOut, v, vaultControllers[v]));
+		logicLayers.push_back(new LogicLayer(debugOut, stateOut, v));
 	}
 	
 	//initialize refresh counters
@@ -46,6 +47,7 @@ HMC::HMC(ofstream &debugOut_, ofstream &stateOut_):
 		vaultControllers[v]->dramP = drams[v];
 		//Upstream
 		vaultControllers[v]->upBufferDest = crossbarSwitch;
+		logicLayers[v]->downBufferDest = vaultControllers[v];
 	}
 }
 
@@ -64,10 +66,23 @@ HMC::~HMC()
 	for(int v=0; v<NUM_VAULTS; v++) {
 		delete vaultControllers[v];
 		delete drams[v];
+		delete logicLayers[v];
 	}
 	vaultControllers.clear();
 	drams.clear();
+	logicLayers.clear();
 }
+
+//
+//Register read and write callback functions
+//
+void HMC::RegisterCallbacks(TransCompCB *readCB, TransCompCB *writeCB)
+{	
+	for(int v=0; v<NUM_VAULTS; v++) {
+		logicLayers[v]->RegisterCallbacks(readCB, writeCB);
+	}
+}
+
 
 //
 //Update the state of HMC
@@ -78,6 +93,9 @@ void HMC::Update()
 		downLinkSlaves[l]->Update();
 	}
 	crossbarSwitch->Update();
+	for(int v=0; v<NUM_VAULTS; v++) {
+		logicLayers[v]->Update();
+	}
 	for(int v=0; v<NUM_VAULTS; v++) {
 		vaultControllers[v]->Update();
 	}
@@ -100,6 +118,9 @@ void HMC::PrintState()
 		downLinkSlaves[l]->PrintState();
 	}
 	crossbarSwitch->PrintState();
+	for(int v=0; v<NUM_VAULTS; v++) {
+		logicLayers[v]->PrintState();
+	}
 	for(int v=0; v<NUM_VAULTS; v++) {
 		vaultControllers[v]->PrintState();
 	}

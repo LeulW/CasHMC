@@ -248,35 +248,59 @@ CasHMCWrapper::~CasHMCWrapper()
 void CasHMCWrapper::RegisterCallbacks(TransCompCB *readCB, TransCompCB *writeCB)
 {
 	hmcCont->RegisterCallbacks(readCB, writeCB);
+	hmc->RegisterCallbacks(readCB, writeCB);
 }
 
 //
 //Check buffer available space and receive transaction
 //
-bool CasHMCWrapper::ReceiveTran(TransactionType tranType, uint64_t addr, unsigned size)
+bool CasHMCWrapper::ReceiveTran(TransactionType tranType, uint64_t addr, unsigned size, bool logicRequest)
 {
-	Transaction *newTran = new Transaction(tranType, addr, size, this);
-
-	if(hmcCont->ReceiveDown(newTran)) {
-		DE_CR(ALI(18)<<" (BUS)"<<ALI(15)<<*newTran<<"Down) SENDING transaction to HMC controller (HC)");
-		return true;
-	}
-	else {
-		newTran->ReductGlobalID();
-		delete newTran->trace;
-		delete newTran;
-		return false;
+	Transaction *newTran = new Transaction(tranType, addr, size, this, logicRequest);
+	
+	if(logicRequest){
+		if(hmc->logicLayers[0]->ReceiveDown(newTran)){
+			DE_CR(ALI(18)<<" (LL)"<<ALI(15)<<*newTran<<"Down) SENDING transaction to Logic Layer (LL)");
+			return true;
+		}
+		else {
+			newTran->ReductGlobalID();
+			delete newTran->trace;
+			delete newTran;
+			return false;
+		}
+	}else{
+		if(hmcCont->ReceiveDown(newTran)) {
+			DE_CR(ALI(18)<<" (BUS)"<<ALI(15)<<*newTran<<"Down) SENDING transaction to HMC controller (HC)");
+			return true;
+		}
+		else {
+			newTran->ReductGlobalID();
+			delete newTran->trace;
+			delete newTran;
+			return false;
+		}
 	}
 }
 
 bool CasHMCWrapper::ReceiveTran(Transaction *tran)
 {
-	if(hmcCont->ReceiveDown(tran)) {
-		DE_CR(ALI(18)<<" (BUS)"<<ALI(15)<<*tran<<"Down) SENDING transaction to HMC controller (HC)");
-		return true;
-	}
-	else {
-		return false;
+	if(tran->logicRequest){
+		if(hmc->logicLayers[(tran->address >> (33-_log2(NUM_VAULTS))) & (NUM_VAULTS-1)]->ReceiveDown(tran)){
+			DE_CR(ALI(18)<<" (LL)"<<ALI(15)<<*tran<<"Down) SENDING transaction to Logic Layer (LL)");
+			return true;
+		}
+		else {
+			return false;
+		}
+	}else{
+		if(hmcCont->ReceiveDown(tran)) {
+			DE_CR(ALI(18)<<" (BUS)"<<ALI(15)<<*tran<<"Down) SENDING transaction to HMC controller (HC)");
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 }
 

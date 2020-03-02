@@ -6,10 +6,6 @@
 *                  Ki-Seok Chung
 *                  Hanyang University
 *                  estwings57 [at] gmail [dot] com
-*
-*  Copyright 2020, Leul W. Belayneh
-*                  University of Michigan
-*                  leulb [at] umich [dot] edu
 *  All rights reserved.
 *********************************************************************************/
 
@@ -55,6 +51,7 @@ void LogicLayer::RegisterCallbacks(TransCompCB *readCB, TransCompCB *writeCB)
 //
 void LogicLayer::CallbackReceiveDown(Transaction *downEle, bool chkReceive)
 {
+    //cout<<"Packet in the downlink of the Logic Layer!"<<endl;
 	downEle->address &= ((uint64_t)NUM_VAULTS*NUM_BANKS*NUM_COLS*NUM_ROWS - 1);
 	downEle->trace->tranTransmitTime = currentClockCycle;
 	if(downEle->transactionType == DATA_WRITE)	downEle->trace->statis->hmcTransmitSize += downEle->dataSize;
@@ -67,6 +64,7 @@ void LogicLayer::CallbackReceiveDown(Transaction *downEle, bool chkReceive)
 }
 void LogicLayer::CallbackReceiveUp(Packet *upEle, bool chkReceive)
 {
+    //cout<<"Packet in the uplink of the Logic Layer!"<<endl;
 /*	if(chkReceive) {
 		DEBUG(ALI(18)<<header<<ALI(15)<<*upEle<<"Up)   RECEIVING packet");
 	}

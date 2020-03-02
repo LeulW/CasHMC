@@ -23,6 +23,7 @@
 #include "CrossbarSwitch.h"
 #include "VaultController.h"
 #include "DRAM.h"
+#include "LogicLayer.h"
 
 using namespace std;
 
@@ -36,6 +37,7 @@ public:
 	//Functions
 	//
 	HMC(ofstream &debugOut_, ofstream &stateOut_);
+	void RegisterCallbacks(TransCompCB *readCB, TransCompCB *writeCB);
 	virtual ~HMC();
 	void Update();
 	void PrintState();
@@ -50,6 +52,8 @@ public:
 	CrossbarSwitch *crossbarSwitch;
 	vector<VaultController *> vaultControllers;
 	vector<DRAM *> drams;
+
+	vector<LogicLayer *> logicLayers;
 };
 
 }

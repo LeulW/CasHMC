@@ -44,7 +44,7 @@ public:
 	CasHMCWrapper(string simCfg, string dramCfg);
 	virtual ~CasHMCWrapper();
 	void RegisterCallbacks(TransCompCB *readCB, TransCompCB *writeCB);
-	bool ReceiveTran(TransactionType tranType, uint64_t addr, unsigned size);
+	bool ReceiveTran(TransactionType tranType, uint64_t addr, unsigned size, bool logicRequest=false);
 	bool ReceiveTran(Transaction *tran);
 	bool CanAcceptTran();
 	void UpdateMSHR(unsigned mshr);

@@ -15,7 +15,7 @@ namespace CasHMC
 {
 	
 DRAMCommand::DRAMCommand(DRAMCommandType cmdtype, unsigned tag, unsigned bnk, unsigned col, unsigned rw, unsigned dSize,
-							bool pst, TranTrace *lat, bool last, PacketCommandType pktCMD, bool atm, bool seg):
+							bool pst, TranTrace *lat, bool last, PacketCommandType pktCMD, bool atm, bool seg, bool logicRequest):
 	trace(lat),
 	commandType(cmdtype),
 	packetTAG(tag),
@@ -27,7 +27,8 @@ DRAMCommand::DRAMCommand(DRAMCommandType cmdtype, unsigned tag, unsigned bnk, un
 	lastCMD(last),
 	packetCMD(pktCMD),
 	atomic(atm),
-	segment(seg)
+	segment(seg),
+	logicRequest(logicRequest)
 {
 }
 
@@ -45,6 +46,7 @@ DRAMCommand::DRAMCommand(const DRAMCommand &dc)
 	packetCMD = dc.packetCMD;
 	atomic = dc.atomic;
 	segment = dc.segment;
+	logicRequest = dc.logicRequest;
 }
 
 DRAMCommand::~DRAMCommand()

@@ -142,4 +142,5 @@ sources/HMC.po: sources/HMC.cpp /usr/include/stdc-predef.h sources/HMC.h \
  /usr/include/x86_64-linux-gnu/bits/mathcalls.h \
  /usr/include/x86_64-linux-gnu/bits/mathinline.h sources/Link.h \
  sources/CrossbarSwitch.h sources/VaultController.h sources/DRAMCommand.h \
- sources/CommandQueue.h sources/DRAM.h sources/BankState.h
+ sources/CommandQueue.h sources/DRAM.h sources/BankState.h \
+ sources/LogicLayer.h sources/CallBack.h

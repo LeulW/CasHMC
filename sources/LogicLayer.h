@@ -6,10 +6,6 @@
 *                  Ki-Seok Chung
 *                  Hanyang University
 *                  estwings57 [at] gmail [dot] com
-*
-*  Copyright 2020, Leul W. Belayneh
-*                  University of Michigan
-*                  leulb [at] umich [dot] edu
 *  All rights reserved.
 *********************************************************************************/
 

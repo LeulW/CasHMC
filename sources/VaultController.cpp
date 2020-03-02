@@ -129,24 +129,24 @@ void VaultController::MakeRespondPacket(DRAMCommand *retCMD)
 	if(retCMD->atomic) {
 		if(retCMD->packetCMD == _2ADD8 || retCMD->packetCMD == ADD16 || retCMD->packetCMD == INC8
 		|| retCMD->packetCMD == EQ8 || retCMD->packetCMD == EQ16 || retCMD->packetCMD == BWR) {
-			newPacket = new Packet(RESPONSE, WR_RS, retCMD->packetTAG, 1, retCMD->trace);
+			newPacket = new Packet(RESPONSE, WR_RS, retCMD->packetTAG, 1, retCMD->trace, retCMD->logicRequest);
 			pendingDataSize -= 1;
 		}
 		else {
-			newPacket = new Packet(RESPONSE, RD_RS, retCMD->packetTAG, 2, retCMD->trace);
+			newPacket = new Packet(RESPONSE, RD_RS, retCMD->packetTAG, 2, retCMD->trace, retCMD->logicRequest);
 			pendingDataSize -= 2;
 		}
 	}
 	else {
 		if(retCMD->commandType == WRITE_DATA) {
 			//packet, cmd, tag, lng, *lat
-			newPacket = new Packet(RESPONSE, WR_RS, retCMD->packetTAG, 1, retCMD->trace);
+			newPacket = new Packet(RESPONSE, WR_RS, retCMD->packetTAG, 1, retCMD->trace, retCMD->logicRequest);
 			pendingDataSize -= 1;
 			//DEBUG(ALI(18)<<header<<ALI(15)<<*retCMD<<"Up)   pendingDataSize 1 decreased   (current pendingDataSize : "<<pendingDataSize<<")");
 		}
 		else if(retCMD->commandType == READ_DATA) {
 			//packet, cmd, tag, lng, *lat
-			newPacket = new Packet(RESPONSE, RD_RS, retCMD->packetTAG, (retCMD->dataSize/16)+1, retCMD->trace);
+			newPacket = new Packet(RESPONSE, RD_RS, retCMD->packetTAG, (retCMD->dataSize/16)+1, retCMD->trace, retCMD->logicRequest);
 			pendingDataSize -= (retCMD->dataSize/16)+1;
 			//DEBUG(ALI(18)<<header<<ALI(15)<<*retCMD<<"Up)   pendingDataSize "<<(retCMD->dataSize/16)+1<<" decreased   (current pendingDataSize : "<<pendingDataSize<<")");
 		}
@@ -190,12 +190,22 @@ void VaultController::Update()
 			exit(0);
 		}
 		else{
-			if(upBufferDest->ReceiveUp(upBuffers[0])) {
-				DEBUG(ALI(18)<<header<<ALI(15)<<*upBuffers[0]<<"Up)   SENDING packet to crossbar switch (CS)");
-				upBuffers.erase(upBuffers.begin(), upBuffers.begin()+upBuffers[0]->LNG);
-			}
-			else {
-				//DEBUG(ALI(18)<<header<<ALI(15)<<*upBuffers[0]<<"Up)   Crossbar switch buffer FULL");	
+			if(upBuffers[0]->logicRequest){
+				if(upBufferDestLL->ReceiveUp(upBuffers[0])) {
+					DEBUG(ALI(18)<<header<<ALI(15)<<*upBuffers[0]<<"Up)   SENDING packet to Logic Layer (LL)");
+					upBuffers.erase(upBuffers.begin(), upBuffers.begin()+upBuffers[0]->LNG);
+				}
+				else {
+					//DEBUG(ALI(18)<<header<<ALI(15)<<*upBuffers[0]<<"Up)   Crossbar switch buffer FULL");	
+				}
+			}else{
+				if(upBufferDest->ReceiveUp(upBuffers[0])) {
+					DEBUG(ALI(18)<<header<<ALI(15)<<*upBuffers[0]<<"Up)   SENDING packet to crossbar switch (CS)");
+					upBuffers.erase(upBuffers.begin(), upBuffers.begin()+upBuffers[0]->LNG);
+				}
+				else {
+					//DEBUG(ALI(18)<<header<<ALI(15)<<*upBuffers[0]<<"Up)   Crossbar switch buffer FULL");	
+				}
 			}
 		}
 	}
