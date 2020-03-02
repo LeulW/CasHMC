@@ -47,7 +47,8 @@ public:
 	//
 	//Functions
 	//
-	Transaction(TransactionType tranType, uint64_t addr, unsigned size, TranStatistic *statis);
+	//#LogicLayer
+	Transaction(TransactionType tranType, uint64_t addr, unsigned size, TranStatistic *statis, bool logicRequest=false);
 	virtual ~Transaction();
 	void ReductGlobalID();
 
@@ -60,6 +61,8 @@ public:
 	unsigned dataSize;					//[byte] Size of data
 	unsigned transactionID;				//Unique identifier
 	unsigned LNG;
+	//#LogicLayer
+	bool logicRequest;
 };
 
 ostream& operator<<(ostream &out, const Transaction &t);

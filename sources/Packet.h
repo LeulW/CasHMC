@@ -59,8 +59,8 @@ class Packet
 {
 public:
 	//Functions
-	Packet(PacketType packet, PacketCommandType cmd, uint64_t addr, unsigned cub, unsigned lng, TranTrace *lat);	//Request Packet
-	Packet(PacketType packet, PacketCommandType cmd, unsigned tag, unsigned lng, TranTrace *lat);				//Response Packet
+	Packet(PacketType packet, PacketCommandType cmd, uint64_t addr, unsigned cub, unsigned lng, TranTrace *lat, bool logicRequest=false);	//Request Packet
+	Packet(PacketType packet, PacketCommandType cmd, unsigned tag, unsigned lng, TranTrace *lat, bool logicRequest=false);				//Response Packet
 	virtual ~Packet();
 	Packet(const Packet &f);
 	unsigned long GetCRC();
@@ -92,6 +92,9 @@ public:
 	
 	//Response Packet Fields
 	unsigned AF, ERRSTAT, DINV;
+	
+	//#LogicLayer
+	bool logicRequest;
 };
 
 ostream& operator<<(ostream &out, const Packet &t);

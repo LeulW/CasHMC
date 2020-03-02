@@ -17,11 +17,14 @@ extern unsigned tranGlobalID;
 
 namespace CasHMC
 {
-	
-Transaction::Transaction(TransactionType tranType, uint64_t addr, unsigned size, TranStatistic *statis):
+//#LogicLayer	
+Transaction::Transaction(TransactionType tranType, uint64_t addr, unsigned size, TranStatistic *statis, bool logicRequest):
 	transactionType(tranType),
 	address(addr),
-	dataSize(size)
+	dataSize(size),
+	//#LogicLayer
+	logicRequest(logicRequest)
+	
 {
 	LNG = 1;
 	transactionID = tranGlobalID++;

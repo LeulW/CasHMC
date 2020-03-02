@@ -19,13 +19,15 @@ namespace CasHMC
 {
 
 //Request packet
-Packet::Packet(PacketType packet, PacketCommandType cmd, uint64_t addr, unsigned cub, unsigned lng, TranTrace *lat):
+Packet::Packet(PacketType packet, PacketCommandType cmd, uint64_t addr, unsigned cub, unsigned lng, TranTrace *lat, bool logicRequest):
 	trace(lat),
 	packetType(packet),
 	CUB(cub),
 	LNG(lng),
 	CMD(cmd),
-	ADRS(addr)
+	ADRS(addr),
+	//#LogicLayer
+	logicRequest(logicRequest)
 {
 	bufPopDelay=1;
 	CRCtable[256]=0;	
@@ -67,12 +69,14 @@ Packet::Packet(PacketType packet, PacketCommandType cmd, uint64_t addr, unsigned
 	}
 }
 //Response packet
-Packet::Packet(PacketType packet, PacketCommandType cmd, unsigned tag, unsigned lng, TranTrace *lat):
+Packet::Packet(PacketType packet, PacketCommandType cmd, unsigned tag, unsigned lng, TranTrace *lat, bool logicRequest):
 	trace(lat),
 	packetType(packet),
 	TAG(tag),
 	LNG(lng),
-	CMD(cmd)
+	CMD(cmd),
+	//#LogicLayer
+	logicRequest(logicRequest)
 {
 	bufPopDelay=1;
 	CRCtable[256]=0;	
