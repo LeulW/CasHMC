@@ -72,7 +72,7 @@ void MakeRandomTransaction(void)
 	}
 }
 
-void ParseTraceFileLine(string &line, uint64_t &clockCycle, uint64_t &addr, TransactionType &tranType, unsigned &dataSize)
+void ParseTraceFileLine(string &line, uint64_t &clockCycle, uint64_t &addr, TransactionType &tranType, unsigned &dataSize, bool &logicRequest)
 {
 	int previousIndex=0;
 	int spaceIndex=0;
@@ -135,11 +135,21 @@ void ParseTraceFileLine(string &line, uint64_t &clockCycle, uint64_t &addr, Tran
 	spaceIndex = line.find_first_not_of(" ", previousIndex);
 	if(spaceIndex==-1) {
 		dataSize = TRANSACTION_SIZE;
-		return;
 	}
 	tempStr = line.substr(spaceIndex, line.find_first_of(" ", spaceIndex) - spaceIndex);
 	istringstream size(tempStr);
 	size>>dataSize;
+	previousIndex = line.find_first_of(" ", spaceIndex);
+
+	spaceIndex = line.find_first_not_of(" ", previousIndex);
+	if(spaceIndex==-1){
+		logicRequest = false;
+		return;
+	}	
+	tempStr = line.substr(spaceIndex, line.find_first_of(" ", spaceIndex) - spaceIndex);
+	istringstream LL(tempStr);
+	LL>>logicRequest;
+
 }
 
 int main(int argc, char **argv)
@@ -269,8 +279,9 @@ int main(int argc, char **argv)
 						uint64_t addr;
 						TransactionType tranType;
 						unsigned dataSize;
-						ParseTraceFileLine(line, issueClock, addr, tranType, dataSize);
-						Transaction *newTran = new Transaction(tranType, addr, dataSize, casHMCWrapper);
+						bool logicRequest;
+						ParseTraceFileLine(line, issueClock, addr, tranType, dataSize, logicRequest);
+						Transaction *newTran = new Transaction(tranType, addr, dataSize, casHMCWrapper, logicRequest);
 						
 						if(cpuCycle >= issueClock) {
 							if(!casHMCWrapper->ReceiveTran(newTran)) {
