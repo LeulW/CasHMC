@@ -52,7 +52,9 @@ version CasHMC v1.3 - 2017.07.10
      * LINK_MONITOR : the number of active links is decided by the derived downstream and upstream link bandwidth
      * AUTONOMOUS : MSHR and LINK_MONITOR together
    - Minor revision
-
+  
+  In this version
+    * Logic layer implementation is added to the CasHMC implementation.
 
 4. Getting CasHMC
 
@@ -108,7 +110,8 @@ version CasHMC v1.3 - 2017.07.10
       TransactionType tranType = DATA_READ;
       uint64_t physicalAddress = 0x0123456789abcdef;
       unsigned dataSize = 32;
-      Transaction *newTran = new Transaction(tranType, addr, dataSize, casHMCWrapper);
+      bool logicRequest = false;
+      Transaction *newTran = new Transaction(tranType, addr, dataSize, casHMCWrapper, logicRequest);
       casHMCWrapper->ReceiveTran(newTran);
       ...
   
